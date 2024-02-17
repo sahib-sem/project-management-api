@@ -3,7 +3,7 @@ import { LocalAuthGuard } from './guards/local-auth.guard';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { RegisterDto } from './Dto/register.dto';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Roles } from './role.decorator';
 import { Role } from './user.role';
 import { RolesGuard } from './guards/role.guard';
@@ -13,6 +13,23 @@ import { RolesGuard } from './guards/role.guard';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
+  /**
+   * Logs in a user.
+   * @param req The request object.
+   * @returns The login response.
+   */
+  @ApiOperation({ summary: 'Login' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        username: { type: 'string' },
+        password: { type: 'string' },
+      },
+    },
+  })
+  @ApiResponse({ status: 200, description: 'Login successful' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @Post('login')
   @UseGuards(LocalAuthGuard, RolesGuard)
   @Roles(Role.Admin)
@@ -20,9 +37,21 @@ export class AuthController {
     return this.authService.login(req.user);
   }
 
+  /**
+   * Creates a new user.
+   * @param registerDto The registration data.
+   * @returns The registration response.
+   */
+  @ApiOperation({ summary: 'Register new user' })
+  @ApiResponse({
+    status: 200,
+    description: 'Success.',
+    schema: {
+      type: 'string',
+    },
+  })
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Post('register')
-  @ApiResponse({ status: 200, description: 'Success.' })
   @Roles(Role.Admin)
   async createAdmin(@Body() registerDto: RegisterDto) {
     return this.authService.register(registerDto);

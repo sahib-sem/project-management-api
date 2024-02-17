@@ -1,10 +1,15 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { Admin } from './schemas/admin.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { RegisterDto } from 'src/auth/Dto/register.dto';
 import * as bcrypt from 'bcryptjs';
+import { UpdateUserDto } from 'src/auth/Dto/update_user.dto';
 
 @Injectable()
 export class AdminService {
@@ -25,9 +30,24 @@ export class AdminService {
       const { password, ...admin_final } = created_admin.toObject();
       return admin_final._id;
     } catch (err) {
+      console.log(err);
       throw new InternalServerErrorException('unexpected error occured');
     }
   }
 
-  async updateAdmin() {}
+  async updateAdmin(userId: string, updateAdmin: UpdateUserDto) {
+    const admin = await this.adminModel.findById(userId);
+
+    if (!admin) {
+      throw new NotFoundException('Admin not found');
+    }
+
+    Object.keys(updateAdmin).forEach((key) => {
+      if (key in admin) {
+        admin[key] = updateAdmin[key];
+      }
+    });
+
+    await admin.save();
+  }
 }

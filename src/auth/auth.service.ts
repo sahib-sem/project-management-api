@@ -1,5 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { AdminService } from 'src/admin/admin.service';
 import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
@@ -9,6 +13,7 @@ import { Types } from 'mongoose';
 import { Role } from 'src/auth/user.role';
 import { ClientService } from 'src/client/client.service';
 import { DeveloperService } from 'src/developer/developer.service';
+import { UpdateUserDto } from './Dto/update_user.dto';
 
 @Injectable()
 export class AuthService {
@@ -20,8 +25,11 @@ export class AuthService {
   ) {}
 
   async validateAdmin(username: string, password: string): Promise<any> {
-    const admin = await this.adminService.findOne(username);
-
+    const admin_mongo = await this.adminService.findOne(username);
+    if (!admin_mongo) {
+      throw new UnauthorizedException();
+    }
+    const admin = admin_mongo.toObject();
     if (admin && (await bcrypt.compare(password, admin.password))) {
       const { password, ...result } = admin;
 
@@ -31,7 +39,7 @@ export class AuthService {
   }
 
   async login(user: any) {
-    const payload = { username: user._doc.username, sub: user._doc._id };
+    const payload = { username: user.username, sub: user._id };
     return {
       access_token: this.jwtService.sign(payload),
     };

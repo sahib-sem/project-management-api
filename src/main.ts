@@ -14,6 +14,7 @@ async function bootstrap() {
     .setDescription('Manage projects in Arez Armada')
     .setVersion('1.0')
     .addTag('Project Management API')
+    .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);

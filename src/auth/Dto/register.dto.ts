@@ -1,5 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
+import { Role } from '../user.role';
+import { IsValidRole } from './validrole';
 
 export class RegisterDto {
   @IsString()
@@ -8,7 +10,8 @@ export class RegisterDto {
 
   @IsString()
   @ApiProperty()
-  role: string;
+  @IsValidRole()
+  role: Role;
 
   @IsString()
   @ApiProperty()
@@ -27,5 +30,6 @@ export class RegisterDto {
 
   @IsString()
   @IsOptional()
+  @ApiProperty()
   email: string;
 }

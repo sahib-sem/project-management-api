@@ -23,6 +23,7 @@ export class ClientService {
       const { password, ...client_final } = created_client.toObject();
       return client_final._id;
     } catch (err) {
+      console.log(err);
       throw new InternalServerErrorException(
         'unexpected error occured while trying to create client document',
       );

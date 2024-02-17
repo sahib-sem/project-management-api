@@ -13,12 +13,12 @@ export class Developer {
   role: Role.Developer;
 
   @Prop({ required: true })
-  contant_info: string;
+  contact_info: string;
 
   @Prop({ required: true })
   email: string;
 
-  @Prop({ required: true })
+  @Prop({ required: true, unique: true })
   username: string;
 
   @Prop({ required: true })
