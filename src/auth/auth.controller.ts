@@ -31,8 +31,7 @@ export class AuthController {
   @ApiResponse({ status: 200, description: 'Login successful' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @Post('login')
-  @UseGuards(LocalAuthGuard, RolesGuard)
-  @Roles(Role.Admin)
+  @UseGuards(LocalAuthGuard)
   async login(@Request() req) {
     return this.authService.login(req.user);
   }
@@ -53,7 +52,7 @@ export class AuthController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Post('register')
   @Roles(Role.Admin)
-  async createAdmin(@Body() registerDto: RegisterDto) {
+  async createuser(@Body() registerDto: RegisterDto) {
     return this.authService.register(registerDto);
   }
 }

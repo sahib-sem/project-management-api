@@ -10,27 +10,27 @@ import {
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UpdateUserDto } from 'src/auth/Dto/update_user.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { AdminService } from './admin.service';
+import { UserService } from './user.service';
 
-@Controller('admin')
-@ApiTags('Admin')
-export class AdminController {
-  constructor(private adminService: AdminService) {}
+@Controller('user')
+@ApiTags('User')
+export class userController {
+  constructor(private userService: UserService) {}
 
   /**
-   * Updates an admin user.
-   * @param updateAdmin The updated user data.
+   * Updates an user user.
+   * @param updateuser The updated user data.
    * @param req The request object.
    * @param id The ID of the user to update.
    * @throws UnauthorizedException if the authenticated user is not authorized to update the user.
    */
-  @ApiOperation({ summary: 'Update admin' })
+  @ApiOperation({ summary: 'Update user' })
   @ApiBody({ type: UpdateUserDto })
   @ApiResponse({ status: 200, description: 'User updated successfully' })
   @UseGuards(JwtAuthGuard)
   @Patch('update/:id')
-  async updateAdmin(
-    @Body() updateAdmin: UpdateUserDto,
+  async update_user(
+    @Body() updateUser: UpdateUserDto,
     @Request() req,
     @Param('id') id: string,
   ) {
@@ -39,6 +39,6 @@ export class AdminController {
       throw new UnauthorizedException();
     }
 
-    await this.adminService.updateAdmin(id, updateAdmin);
+    await this.userService.updateuser(id, updateUser);
   }
 }

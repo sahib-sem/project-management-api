@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
 import { Role } from '../user.role';
-import { IsValidRole } from './validrole';
+import { IsValidRole } from './valid_role';
 
 export class RegisterDto {
   @IsString()
