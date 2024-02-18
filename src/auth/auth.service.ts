@@ -43,8 +43,8 @@ export class AuthService {
   async register(registerDto: RegisterDto): Promise<Types.ObjectId | null> {
     const role = registerDto.role;
 
-    await this.userService.createUser(registerDto);
+    const user = await this.userService.createUser(registerDto);
 
-    return null;
+    return user._id;
   }
 }

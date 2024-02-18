@@ -11,7 +11,7 @@ import { ProjectModule } from './project/project.module';
     UserModule,
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: ['.env'],
+      envFilePath: '.env',
     }),
     MongooseModule.forRoot(process.env.MONGO_URI),
     ProjectModule,

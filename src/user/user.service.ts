@@ -20,6 +20,13 @@ export class UserService {
     return user;
   }
 
+  async findOneById(user_id: string) {
+    const user = await this.userModel.findById(user_id);
+
+    const { password, ...rest } = user;
+    return rest;
+  }
+
   async createUser(registerDto: RegisterDto): Promise<Types.ObjectId> {
     const { password, email, ...rest } = registerDto;
 
@@ -30,7 +37,6 @@ export class UserService {
       const { password, ...user_final } = created_user.toObject();
       return user_final._id;
     } catch (err) {
-      console.log(err);
       throw new InternalServerErrorException('unexpected error occured');
     }
   }
@@ -48,6 +54,7 @@ export class UserService {
       }
     });
 
-    await user.save();
+    const updated_user = await user.save();
+    return updated_user._id;
   }
 }

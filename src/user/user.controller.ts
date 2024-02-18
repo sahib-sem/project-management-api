@@ -7,13 +7,21 @@ import {
   Param,
   UnauthorizedException,
 } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { UpdateUserDto } from 'src/auth/Dto/update_user.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { UserService } from './user.service';
 
 @Controller('user')
 @ApiTags('User')
+@UseGuards(JwtAuthGuard)
+@ApiBearerAuth()
 export class userController {
   constructor(private userService: UserService) {}
 
@@ -27,18 +35,16 @@ export class userController {
   @ApiOperation({ summary: 'Update user' })
   @ApiBody({ type: UpdateUserDto })
   @ApiResponse({ status: 200, description: 'User updated successfully' })
-  @UseGuards(JwtAuthGuard)
   @Patch('update/:id')
   async update_user(
     @Body() updateUser: UpdateUserDto,
     @Request() req,
     @Param('id') id: string,
   ) {
-    console.log(id, req.user);
     if (req.user.userId !== id) {
       throw new UnauthorizedException();
     }
 
-    await this.userService.updateuser(id, updateUser);
+    return await this.userService.updateuser(id, updateUser);
   }
 }
