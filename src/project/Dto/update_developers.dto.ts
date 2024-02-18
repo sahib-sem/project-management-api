@@ -1,13 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsUUID } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class UpdateProjectDeveloperDto {
-  @IsUUID()
+  @IsString()
   @IsNotEmpty()
   @ApiProperty()
   project_id: string;
 
-  @IsUUID()
+  @IsString()
   @IsNotEmpty()
   @ApiProperty()
   developer_id: string;

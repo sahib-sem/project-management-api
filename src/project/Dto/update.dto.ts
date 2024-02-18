@@ -1,14 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import {
-  IsDateString,
-  IsInt,
-  IsOptional,
-  IsString,
-  IsUUID,
-  Max,
-  Min,
-} from 'class-validator';
+import { IsDate, IsInt, IsOptional, IsString, Max, Min } from 'class-validator';
 
 export class UpdateProjectDto {
   @IsOptional()
@@ -17,13 +9,13 @@ export class UpdateProjectDto {
   name: string;
 
   @IsOptional()
-  @IsDateString()
+  @IsDate()
   @ApiProperty()
   @Type(() => Date)
   start_date: Date;
 
   @IsOptional()
-  @IsDateString()
+  @IsDate()
   @ApiProperty()
   @Type(() => Date)
   end_date: Date;
@@ -36,7 +28,7 @@ export class UpdateProjectDto {
   progress: number;
 
   @IsOptional()
-  @IsUUID()
+  @IsString()
   @ApiProperty()
   owner: string;
 }

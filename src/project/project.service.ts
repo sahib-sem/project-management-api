@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Project } from './schema/project.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -15,14 +19,12 @@ export class ProjectService {
   ) {}
 
   async findOne(project_id: string): Promise<Project> {
-    const project = (await this.projectModel.findById(project_id)).populate(
-      'owner',
-      '-password',
-    );
+    const project = await this.projectModel.findById(project_id);
     if (!project) {
       throw new NotFoundException('Project not found');
     }
-    return project;
+    const final_project = project.populate('owner', '-password');
+    return final_project;
   }
 
   async getAll(user_id: string): Promise<Project[]> {
@@ -47,9 +49,13 @@ export class ProjectService {
   async addDeveloper(
     project_id: string,
     developer_id: string,
+    user_id: string,
   ): Promise<boolean> {
     const project = await this.projectModel.findById(project_id);
 
+    if (user_id !== project.owner.toString()) {
+      throw new UnauthorizedException('You are not the owner of this project');
+    }
     if (!project) {
       throw new NotFoundException('Project not found');
     }
@@ -70,9 +76,13 @@ export class ProjectService {
   async removeDeveloper(
     project_id: string,
     developer_id: string,
+    user_id: string,
   ): Promise<boolean> {
     const project = await this.projectModel.findById(project_id);
 
+    if (user_id !== project.owner.toString()) {
+      throw new UnauthorizedException('You are not the owner of this project');
+    }
     if (!project) {
       throw new NotFoundException('Project not found');
     }

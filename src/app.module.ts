@@ -7,12 +7,11 @@ import { ProjectModule } from './project/project.module';
 
 @Module({
   imports: [
-    AuthModule,
-    UserModule,
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '.env',
     }),
+    AuthModule,
+    UserModule,
     MongooseModule.forRoot(process.env.MONGO_URI),
     ProjectModule,
   ],
